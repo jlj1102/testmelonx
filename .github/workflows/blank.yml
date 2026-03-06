@@ -87,7 +87,7 @@ jobs:
             -destination "generic/platform=iOS" \
             -"$filetype_parameter" "$file_to_build" \
             -sdk iphoneos \
-            -configuration Release \
+            -configuration Archive \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
