@@ -30,10 +30,11 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Checkout
         run: | 
-            git clone https://git.ryujinx.app/melonx/emu.git
+            wget https://git.ryujinx.app/melonx/emu/-/archive/2.3.1/emu-2.3.1.tar
+            tar -xvf emu-2.3.1.tar
       - name: Make iOS distribution scripts executable
         run: |
-            cd emu
+            cd emu-2.3.1
             chmod +x distribution/ios/get_dotnet.sh
             chmod +x distribution/ios/xc-compile.sh
             chmod +x distribution/ios/set_current_version.sh
@@ -42,7 +43,7 @@ jobs:
       - name: Set Scheme
         id: scheme
         run: |
-          cd emu/src/MeloNX
+          cd emu-2.3.1/src/MeloNX
           if [ $scheme = default ]
           then
             scheme_list=$(xcodebuild -list -json | tr -d "\n")
@@ -55,13 +56,13 @@ jobs:
       - name: Set filetype_parameter
         id: filetype_parameter
         run: |
-          cd emu/src/MeloNX
+          cd emu-2.3.1/src/MeloNX
           filetype_parameter=`ls -A | grep -i \\.xcworkspace\$ && echo workspace || echo project`
           echo "filetype_parameter=$filetype_parameter" >> $GITHUB_OUTPUT
       - name: Set file_to_build
         id: file_to_build
         run: |
-          cd emu/src/MeloNX
+          cd emu-2.3.1/src/MeloNX
           file_to_build=`ls -A | grep -i \\.xcworkspace\$ || ls -A | grep -i \\.xcodeproj\$`
           file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
           echo "file_to_build=$file_to_build" >> $GITHUB_OUTPUT
@@ -72,7 +73,7 @@ jobs:
           filetype_parameter: ${{ steps.filetype_parameter.outputs.filetype_parameter }}
           file_to_build: ${{ steps.file_to_build.outputs.file_to_build }}
         run: |
-          cd emu/src/MeloNX
+          cd emu-2.3.1/src/MeloNX
           echo "=== Build Environment ==="
           echo "Scheme: $scheme"
           echo "File type: $filetype_parameter"
@@ -109,12 +110,12 @@ jobs:
         with:
           name: build-logs
           path: |
-            src/MeloNX/build.log
-            src/MeloNX/build_results.xml
+            emu-2.3.1/src/MeloNX/build.log
+            emu-2.3.1/src/MeloNX/build_results.xml
             
       - name: Tar Build Artifact
         run: |
-          cd src/MeloNX
+          cd emu-2.3.1/src/MeloNX
           tar -cvf "$archive_path.xcarchive.tar" "$archive_path.xcarchive"
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
