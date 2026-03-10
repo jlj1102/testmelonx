@@ -74,6 +74,11 @@ jobs:
         run: |
           cd emu-2.3
           /bin/bash ./distribution/ios/xc-compile.sh
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish
+          path: emu-2.3/src/Ryujinx.Headless.SDL2/bin/Release/net8.0/ios-arm64/publish
 
       - name: Archive
         env:
